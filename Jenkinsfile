@@ -54,51 +54,51 @@ pipeline {
             }
         }
 
-        stage('Deploy to Cloud Run with Terraform') {
-            steps {
-                withCredentials([file(credentialsId: 'gcp-service-account', variable: 'GCP_KEY')]) {
-                    sh """
-                        echo "\$GCP_KEY" > account.json
-                        export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/account.json
+    //     stage('Deploy to Cloud Run with Terraform') {
+    //         steps {
+    //             withCredentials([file(credentialsId: 'gcp-service-account', variable: 'GCP_KEY')]) {
+    //                 sh """
+    //                     echo "\$GCP_KEY" > account.json
+    //                     export GOOGLE_APPLICATION_CREDENTIALS=\$(pwd)/account.json
                         
-                        terraform init
-                        terraform apply -auto-approve \\
-                            -var="image=${DOCKER_IMAGE}" \\
-                            -var="service_name=${APP_NAME}"
-                    """
-                }
-            }
-        }
-    }
+    //                     terraform init
+    //                     terraform apply -auto-approve \\
+    //                         -var="image=${DOCKER_IMAGE}" \\
+    //                         -var="service_name=${APP_NAME}"
+    //                 """
+    //             }
+    //         }
+    //     }
+    // }
 
-    post {
-        success {
-            script {
-                withCredentials([
-                    string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN'),
-                    string(credentialsId: 'telegram-chat-id', variable: 'TELEGRAM_CHAT_ID')
-                ]) {
-                    sh """
-                    curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \\
-                        -d chat_id=${TELEGRAM_CHAT_ID} \\
-                        -d text="✅ Deployment ${APP_NAME} versi ${APP_VERSION} sukses!"
-                    """
-                }
-            }
-        }
-        failure {
-            script {
-                withCredentials([
-                    string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN'),
-                    string(credentialsId: 'telegram-chat-id', variable: 'TELEGRAM_CHAT_ID')
-                ]) {
-                    sh """
-                    curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \\
-                        -d chat_id=${TELEGRAM_CHAT_ID} \\
-                        -d text="❌ Deployment ${APP_NAME} versi ${APP_VERSION} gagal!"
-                    """
-                }
-            }
-        }
-    }
+    // post {
+    //     success {
+    //         script {
+    //             withCredentials([
+    //                 string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN'),
+    //                 string(credentialsId: 'telegram-chat-id', variable: 'TELEGRAM_CHAT_ID')
+    //             ]) {
+    //                 sh """
+    //                 curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \\
+    //                     -d chat_id=${TELEGRAM_CHAT_ID} \\
+    //                     -d text="✅ Deployment ${APP_NAME} versi ${APP_VERSION} sukses!"
+    //                 """
+    //             }
+    //         }
+    //     }
+    //     failure {
+    //         script {
+    //             withCredentials([
+    //                 string(credentialsId: 'telegram-bot-token', variable: 'TELEGRAM_TOKEN'),
+    //                 string(credentialsId: 'telegram-chat-id', variable: 'TELEGRAM_CHAT_ID')
+    //             ]) {
+    //                 sh """
+    //                 curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \\
+    //                     -d chat_id=${TELEGRAM_CHAT_ID} \\
+    //                     -d text="❌ Deployment ${APP_NAME} versi ${APP_VERSION} gagal!"
+    //                 """
+    //             }
+    //         }
+    //     }
+    // }
 }
