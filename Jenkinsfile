@@ -33,7 +33,7 @@ pipeline {
                         sh '''
                             mvn clean verify sonar:sonar \
                             -Dsonar.projectKey=challenge \
-                            -Dsonar.host.url=http://sonarqube:9001 \
+                            -Dsonar.host.url=http://sonarqube:9000 \
                             -Dsonar.login=${SONAR_TOKEN}
                         '''
                     }
