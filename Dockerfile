@@ -1,13 +1,11 @@
-# syntax=docker/dockerfile:1
-FROM eclipse-temurin:17-jdk as builder
+FROM jenkins/jenkins:lts
 
-WORKDIR /app
-COPY . .
-RUN ./mvnw clean package -DskipTests
+USER root
 
-FROM eclipse-temurin:17-jre
-WORKDIR /app
-ARG JAR_FILE=target/*.jar
-COPY --from=builder /app/${JAR_FILE} app.jar
+# Install Docker CLI
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    apt-get clean
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Kembali ke user jenkins
+USER jenkins
