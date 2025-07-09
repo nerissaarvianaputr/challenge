@@ -12,7 +12,6 @@ services:
     networks:
       - cicd-net
 
- 
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
